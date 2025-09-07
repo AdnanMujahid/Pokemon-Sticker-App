@@ -106,13 +106,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         child: SafeArea(
           child: Center(
-            child: FutureBuilder<Pokemon>(
+            child:             FutureBuilder<Pokemon>(
               future: _futurePokemon,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return _buildLoadingWidget();
-                } else if (snapshot.hasError) {
-                  return _buildErrorWidget(snapshot.error.toString());
                 } else if (snapshot.hasData) {
                   final pokemon = snapshot.data!;
                   return _buildPokemonWidget(pokemon);
@@ -204,24 +202,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(
-                Icons.error_outline,
+                Icons.wifi_off,
                 size: 60,
-                color: Colors.red,
+                color: Colors.orange,
               ),
               const SizedBox(height: 20),
               const Text(
-                'Oops! Something went wrong',
+                'No Internet Connection',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.red,
+                  color: Colors.orange,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-              Text(
-                error,
-                style: const TextStyle(
+              const Text(
+                'Unable to fetch Pokémon data. Using offline mode with sample Pokémon.',
+                style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
@@ -291,6 +289,37 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
+                const SizedBox(height: 10),
+                
+                // Offline Mode Indicator (only show for fallback Pokemon)
+                if (pokemon.id <= 5) // Fallback Pokemon have IDs 1, 4, 7, 25, 150
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(color: Colors.orange, width: 1),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.wifi_off,
+                          size: 16,
+                          color: Colors.orange[700],
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Offline Mode',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.orange[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 const SizedBox(height: 20),
                 
                 // Pokemon Image with animated background
